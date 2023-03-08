@@ -11,8 +11,16 @@ const Player = (symbol) => {
 const gameboard = (() => {
   let gameArr = ["", "", "", "", "", "", "", "", ""]
 
-  const update = (square, symbol) => {
-    gameArr[parseInt(square)] = symbol
+  const update = (e) => {
+    const id = e.target.id
+    const symbol = game.currentPlayer().getSymbol()
+
+    if (gameArr[parseInt(id)] !== "") {
+      return
+    } else {
+      gameArr[parseInt(id)] = symbol
+      displayController.update(id, symbol)
+    }
   }
 
   return { update }
@@ -37,17 +45,14 @@ const game = (() => {
 })();
 
 const displayController = (() => {
-  const update = (e) => {
-    const square = document.getElementById(`${e.target.id}`)
-    const symbol = game.currentPlayer().getSymbol()
+  const update = (id, symbol) => {
+    const square = document.getElementById(`${id}`)
     square.textContent = symbol
-
-    gameboard.update(square.id, symbol)
   }
 
   // event handlers
   let boxes = document.querySelectorAll(".box")
-  boxes.forEach(box => box.addEventListener("click", update))
+  boxes.forEach(box => box.addEventListener("click", gameboard.update))
 
   return { update }
 })();
