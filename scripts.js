@@ -22,18 +22,23 @@ const gameboard = (() => {
       displayController.update(id, symbol)
       
       if (game.over()) {
-        console.log("game is over")
+        displayController.freezeBoard()
       } else {
-        console.log("game is not over")
         game.takeTurn()
       }
     }
   }
 
   const boardFull = () => {
-    gameArr.every(position => {
-      return position !== ""
+    let outcome = true
+
+    gameArr.forEach(position => {
+      if (position === "") {
+        outcome = false
+      }
     })
+
+    return outcome
   }
 
   return { update, boardFull, gameArr }
@@ -94,14 +99,18 @@ const game = (() => {
 })();
 
 const displayController = (() => {
+  // event handlers
+  const boxes = document.querySelectorAll(".box")
+  boxes.forEach(box => box.addEventListener("click", gameboard.update))
+
   const update = (id, symbol) => {
     const square = document.getElementById(`${id}`)
     square.textContent = symbol
   }
 
-  // event handlers
-  let boxes = document.querySelectorAll(".box")
-  boxes.forEach(box => box.addEventListener("click", gameboard.update))
+  const freezeBoard = () => {
+    boxes.forEach(box => box.removeEventListener("click", gameboard.update))
+  }
 
-  return { update }
+  return { update, freezeBoard }
 })();
