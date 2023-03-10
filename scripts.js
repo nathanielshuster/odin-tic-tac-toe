@@ -22,9 +22,11 @@ const gameboard = (() => {
       displayController.update(id, symbol)
       
       if (game.over()) {
+        displayController.message()
         displayController.freezeBoard()
       } else {
         game.takeTurn()
+        displayController.message()
       }
     }
   }
@@ -41,7 +43,11 @@ const gameboard = (() => {
     return outcome
   }
 
-  return { update, boardFull, gameArr }
+  const newGame = () => {
+
+  }
+
+  return { update, boardFull, gameArr, newGame }
 })();
 
 const game = (() => {
@@ -100,8 +106,23 @@ const game = (() => {
 
 const displayController = (() => {
   // event handlers
+  const messageEl = document.querySelector(".game-message")
   const boxes = document.querySelectorAll(".box")
   boxes.forEach(box => box.addEventListener("click", gameboard.update))
+  const button = document.querySelector(".reset-button")
+  button.addEventListener("click", gameboard.newGame)
+
+  const message = () => {
+    if (game.over()) {
+      if (game.won()) {
+        messageEl.textContent = `Player ${game.currentPlayer().getSymbol()} wins`
+      } else {
+        messageEl.textContent = `Draw`
+      }
+    } else {
+      messageEl.textContent = `Player ${game.currentPlayer().getSymbol()}'s turn`
+    }
+  }
 
   const update = (id, symbol) => {
     const square = document.getElementById(`${id}`)
@@ -112,5 +133,9 @@ const displayController = (() => {
     boxes.forEach(box => box.removeEventListener("click", gameboard.update))
   }
 
-  return { update, freezeBoard }
+  const unfreezeBoard = () = {
+    boxes.forEach(box => box.addEventListener("click", gameboard.update))
+  }
+
+  return { update, freezeBoard, message, unfreezeBoard }
 })();
