@@ -44,7 +44,7 @@ const gameboard = (() => {
   }
 
   const newGame = () => {
-
+    location.reload()
   }
 
   return { update, boardFull, gameArr, newGame }
@@ -133,9 +133,5 @@ const displayController = (() => {
     boxes.forEach(box => box.removeEventListener("click", gameboard.update))
   }
 
-  const unfreezeBoard = () = {
-    boxes.forEach(box => box.addEventListener("click", gameboard.update))
-  }
-
-  return { update, freezeBoard, message, unfreezeBoard }
+  return { update, freezeBoard, message }
 })();
